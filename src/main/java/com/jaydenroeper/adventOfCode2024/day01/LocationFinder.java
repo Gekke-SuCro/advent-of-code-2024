@@ -48,12 +48,32 @@ public class LocationFinder {
         return totalDistance;
     }
 
+    public int findLocationsBySimilarity() {
+        int totalSimilarity = 0;
+
+        int count = 0;
+        for (int i = 0; i < leftRowInts.size(); i++) {
+            int leftNumber = leftRowInts.get(i);
+            for (Integer number : rightRowInts) {
+                if (number == leftNumber) {
+                    count++;
+                }
+            }
+            totalSimilarity += (leftNumber * count);
+            count = 0;
+        }
+
+        return totalSimilarity;
+    }
+
     public static void main(String[] args) {
         String inputFileString = FileUtils.readFileToString("day01/input.txt");
         LocationFinder locationFinder = new LocationFinder(inputFileString);
 
         int totalDistance = locationFinder.findLocationsByDistance();
+        int totalSimilarity = locationFinder.findLocationsBySimilarity();
 
         System.out.println("Total distance: " + totalDistance);
+        System.out.println("Total similarity: " + totalSimilarity);
     }
 }
