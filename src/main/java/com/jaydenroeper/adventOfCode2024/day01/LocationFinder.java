@@ -3,20 +3,26 @@ package com.jaydenroeper.adventOfCode2024.day01;
 import com.jaydenroeper.adventOfCode2024.utils.FileUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class LocationFinder {
+    List<Integer> leftRowInts;
+    List<Integer> rightRowInts;
 
-    public static void main(String[] args) {
-        String inputFileString = FileUtils.readFileToString("day01/input.txt");
-        inputFileString = inputFileString.replaceAll(" ", ".");
+    public LocationFinder(String inputFile) {
+        leftRowInts = new ArrayList<>();
+        rightRowInts = new ArrayList<>();
+        loadIntRows(inputFile);
+    }
 
-        List<Integer> leftRowInts = new ArrayList<>();
-        List<Integer> rightRowInts = new ArrayList<>();
+    /**
+     * Split the two numbers per row into 2 separate and sorted lists.
+     * @param input
+     */
+    private void loadIntRows(String input) {
+        input = input.replaceAll(" ", ".");
 
-
-        for (String row : inputFileString.split("\n")) {
+        for (String row : input.split("\n")) {
             row = row.trim();
             String[] rowSplit = row.split("\\.");
             String leftNumber = rowSplit[0];
@@ -28,17 +34,26 @@ public class LocationFinder {
 
         leftRowInts = leftRowInts.stream().sorted().toList();
         rightRowInts = rightRowInts.stream().sorted().toList();
+    }
 
-        int totalDiff = 0;
+    public int findLocationsByDistance() {
+        int totalDistance = 0;
 
         if (leftRowInts.size() == rightRowInts.size()) {
             for (int i = 0; i < leftRowInts.size(); i++) {
-                totalDiff += Math.abs(leftRowInts.get(i) - rightRowInts.get(i));
+                totalDistance += Math.abs(leftRowInts.get(i) - rightRowInts.get(i));
             }
         }
 
-        System.out.println(leftRowInts);
-        System.out.println(rightRowInts);
-        System.out.println(totalDiff);
+        return totalDistance;
+    }
+
+    public static void main(String[] args) {
+        String inputFileString = FileUtils.readFileToString("day01/input.txt");
+        LocationFinder locationFinder = new LocationFinder(inputFileString);
+
+        int totalDistance = locationFinder.findLocationsByDistance();
+
+        System.out.println("Total distance: " + totalDistance);
     }
 }
