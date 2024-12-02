@@ -4,7 +4,9 @@ import com.jaydenroeper.adventOfCode2024.day01.LocationFinder;
 import com.jaydenroeper.adventOfCode2024.utils.FileUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ReportChecker {
 
@@ -17,6 +19,25 @@ public class ReportChecker {
         return saveReports;
     }
 
+    public Calculation calcuateLevel(String lastCol, String newCol) {
+        int colInt = Integer.parseInt(lastCol);
+        int nextColInt = Integer.parseInt(newCol);
+        int distance = Math.abs(colInt - nextColInt);
+
+        Calculation calculation = new Calculation();
+        calculation.distance = distance;
+
+        if (colInt > nextColInt) {
+            calculation.level = Level.DECREASING;
+        } else if (colInt < nextColInt) {
+            calculation.level = Level.INCREASING;
+        } else {
+            calculation.level = Level.NEUTRAL;
+        }
+
+        return calculation;
+    }
+
     public static void main(String[] args) {
         String inputFileString = FileUtils.readFileToString("day02/example.txt");
         ReportChecker reportChecker = new ReportChecker();
@@ -27,33 +48,36 @@ public class ReportChecker {
 
         List<String> safeLevels = new ArrayList<>();
 
-        Level level = Level.NEUTRAL;
         for (String row : inputFileString.split("\n")) {
             row = row.trim();
-            String lastCol = row.substring(0, 1).trim();
             boolean levelIsSafe = true;
 
-            String subRow = row.substring(1).trim();
-            for (String col : subRow.split(" ")) {
-                col = col.trim();
-                System.out.println(col);
-
-                int lastColInt = Integer.parseInt(lastCol);
-                int currColInt = Integer.parseInt(col);
-                Level lastLevel = level;
-
-                if (lastColInt > currColInt) {
-                    level = Level.DECREASING;
-                } else if (lastColInt < currColInt) {
-                    level = Level.INCREASING;
-                } else {
-                    level = Level.NEUTRAL;
+            int index = 0;
+            String[] rowNumbers = row.split(" ");
+            Level rowLevel = null;
+            for (String col : rowNumbers) {
+                if (index >= rowNumbers.length - 1) {
+                    continue;
                 }
 
-                levelIsSafe = (lastLevel == level);
-                lastCol = col;
-            }
+                Calculation calculation = reportChecker.calcuateLevel(col, rowNumbers[index + 1]);;
+                Level level = calculation.level;
 
+                if (index == 0) {
+                    rowLevel = level;
+                    System.out.println("Row start: " + col);
+                }
+
+                if (rowLevel != level) {
+                    levelIsSafe = false;
+                }
+                System.out.println(level);
+
+                if (calculation.distance > 2) {
+                    levelIsSafe = false;
+                }
+                index++;
+            }
             if (levelIsSafe) {
                 safeLevels.add(row);
             }
