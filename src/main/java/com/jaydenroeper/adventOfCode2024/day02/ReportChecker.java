@@ -39,7 +39,7 @@ public class ReportChecker {
     }
 
     public static void main(String[] args) {
-        String inputFileString = FileUtils.readFileToString("day02/example.txt");
+        String inputFileString = FileUtils.readFileToString("day02/input.txt");
         ReportChecker reportChecker = new ReportChecker();
 
 //        int saveReports = reportChecker.findAmountOfSaveReports();
@@ -73,7 +73,7 @@ public class ReportChecker {
                 }
                 System.out.println(level);
 
-                if (calculation.distance > 2) {
+                if (calculation.distance > 3) {
                     levelIsSafe = false;
                 }
                 index++;
@@ -83,6 +83,6 @@ public class ReportChecker {
             }
         }
 
-        System.out.println(safeLevels);
+        System.out.println(safeLevels.size());
     }
 }
