@@ -11,15 +11,24 @@ import java.util.Map;
 public class ReportChecker {
 
     public ReportChecker() {
-
     }
 
-    public int findAmountOfSaveReports() {
-        int saveReports = 0;
-        return saveReports;
+    public int findAmountOfSaveReports(String inputString) {
+        List<String> safeLevels = new ArrayList<>();
+
+        for (String row : inputString.split("\n")) {
+            row = row.trim();
+
+            int rowCheck = isSafeRow(row);
+            if (rowCheck == -1) {
+                safeLevels.add(row);
+            }
+        }
+
+        return safeLevels.size();
     }
 
-    public Calculation calcuateLevel(String lastCol, String newCol) {
+    public Calculation calculateLevel(String lastCol, String newCol) {
         int colInt = Integer.parseInt(lastCol);
         int nextColInt = Integer.parseInt(newCol);
         int distance = Math.abs(colInt - nextColInt);
@@ -38,51 +47,49 @@ public class ReportChecker {
         return calculation;
     }
 
-    public static void main(String[] args) {
-        String inputFileString = FileUtils.readFileToString("day02/input.txt");
-        ReportChecker reportChecker = new ReportChecker();
+    private int isSafeRow(String rowString) {
+        boolean isSafeLevel = true;
 
-//        int saveReports = reportChecker.findAmountOfSaveReports();
-//
-//        System.out.println("Save reports: " + saveReports);
+        int index = 0;
+        String[] rowNumbers = rowString.split(" ");
+        Level rowLevel = null;
 
-        List<String> safeLevels = new ArrayList<>();
+        int numOfUnsafeLevels = 0;
 
-        for (String row : inputFileString.split("\n")) {
-            row = row.trim();
-            boolean levelIsSafe = true;
-
-            int index = 0;
-            String[] rowNumbers = row.split(" ");
-            Level rowLevel = null;
-            for (String col : rowNumbers) {
-                if (index >= rowNumbers.length - 1) {
-                    continue;
-                }
-
-                Calculation calculation = reportChecker.calcuateLevel(col, rowNumbers[index + 1]);;
-                Level level = calculation.level;
-
-                if (index == 0) {
-                    rowLevel = level;
-                    System.out.println("Row start: " + col);
-                }
-
-                if (rowLevel != level) {
-                    levelIsSafe = false;
-                }
-                System.out.println(level);
-
-                if (calculation.distance > 3) {
-                    levelIsSafe = false;
-                }
-                index++;
+        for (String col : rowNumbers) {
+            if (index >= rowNumbers.length - 1) {
+                continue;
             }
-            if (levelIsSafe) {
-                safeLevels.add(row);
+
+            Calculation calculation = calculateLevel(col, rowNumbers[index + 1]);;
+            Level level = calculation.level;
+
+            if (index == 0) {
+                rowLevel = level;
+                System.out.println("Row start: " + col);
             }
+
+            if ((rowLevel != level) || (calculation.distance > 3)) {
+                isSafeLevel = false;
+                numOfUnsafeLevels++;
+            }
+
+            System.out.println(level);
+            index++;
         }
 
-        System.out.println(safeLevels.size());
+        if (isSafeLevel) {
+            return -1;
+        }
+
+        return numOfUnsafeLevels;
+    }
+
+    public static void main(String[] args) {
+        String inputFileString = FileUtils.readFileToString("day02/example.txt");
+        ReportChecker reportChecker = new ReportChecker();
+
+        int saveReports = reportChecker.findAmountOfSaveReports(inputFileString);
+        System.out.println("Save reports: " + saveReports);
     }
 }
