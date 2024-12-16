@@ -1,12 +1,9 @@
 package com.jaydenroeper.adventOfCode2024.day02;
 
-import com.jaydenroeper.adventOfCode2024.day01.LocationFinder;
 import com.jaydenroeper.adventOfCode2024.utils.FileUtils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class ReportChecker {
 
@@ -23,6 +20,13 @@ public class ReportChecker {
             if (rowCheck == -1) {
                 safeLevels.add(row);
             }
+
+          if (rowCheck >= 0) {
+              StringBuilder rowSb = new StringBuilder(row);
+              rowSb.deleteCharAt(rowCheck);
+              int newRowCheck = isSafeRow(row);
+              System.out.println(newRowCheck);
+          }
         }
 
         return safeLevels.size();
@@ -54,7 +58,7 @@ public class ReportChecker {
         String[] rowNumbers = rowString.split(" ");
         Level rowLevel = null;
 
-        int numOfUnsafeLevels = 0;
+        List<Integer> unsafeColLevels = new ArrayList<>();
 
         for (String col : rowNumbers) {
             if (index >= rowNumbers.length - 1) {
@@ -66,15 +70,15 @@ public class ReportChecker {
 
             if (index == 0) {
                 rowLevel = level;
-                System.out.println("Row start: " + col);
+//                System.out.println("Row start: " + col);
             }
 
             if ((rowLevel != level) || (calculation.distance > 3)) {
                 isSafeLevel = false;
-                numOfUnsafeLevels++;
+                unsafeColLevels.add(index);
             }
 
-            System.out.println(level);
+//            System.out.println(level);
             index++;
         }
 
@@ -82,7 +86,7 @@ public class ReportChecker {
             return -1;
         }
 
-        return numOfUnsafeLevels;
+        return (unsafeColLevels.size() == 1) ? unsafeColLevels.getFirst() : -2;
     }
 
     public static void main(String[] args) {
