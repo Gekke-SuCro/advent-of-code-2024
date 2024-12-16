@@ -3,6 +3,7 @@ package com.jaydenroeper.adventOfCode2024.day02;
 import com.jaydenroeper.adventOfCode2024.utils.FileUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ReportChecker {
@@ -18,14 +19,24 @@ public class ReportChecker {
 
             int rowCheck = isSafeRow(row);
             if (rowCheck == -1) {
+//                System.out.println("-1: " + row);
                 safeLevels.add(row);
             }
 
           if (rowCheck >= 0) {
-              StringBuilder rowSb = new StringBuilder(row);
-              rowSb.deleteCharAt(rowCheck);
-              int newRowCheck = isSafeRow(row);
+              String[] rowNumbers = row.split(" ");
+              rowNumbers[rowCheck] = "";
+              String newRowString = "";
+              for (String rowNumber : rowNumbers) {
+                  if (!rowNumber.isEmpty()) {
+                      newRowString += rowNumber;
+                  }
+              }
+              int newRowCheck = isSafeRow(newRowString);
               System.out.println(newRowCheck);
+              if (newRowCheck == -1) {
+                  safeLevels.add(newRowString);
+              }
           }
         }
 
